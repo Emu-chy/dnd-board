@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
+
 import { columnType } from "../utils/enum";
 import { TaskModel } from "../utils/interfaces";
 import useTaskCollection from "./useTaskCollection";
@@ -9,6 +10,7 @@ function useColumnTask(column: columnType) {
     const [tasks, setTasks] = useTaskCollection()
     const MAX_TASK_COLUMN = 100;
 
+    // for add task
     const addEmptyTask = useCallback(() => {
         console.log(`adding new empty task ${column} column`)
         setTasks((allTasks) => {
@@ -30,10 +32,41 @@ function useColumnTask(column: columnType) {
             }
         })
     }, [column, setTasks]);
+
+    // for update task
+    const updateTask = useCallback((id: TaskModel['id'], updatedTask: Omit<Partial<TaskModel>, 'id'>) => {
+        console.log(`updating task ${id} with ${JSON.stringify(updateTask)}`)
+        setTasks((allTasks) => {
+            const columnTasks = allTasks[column];
+            return {
+                ...allTasks,
+                [column]: columnTasks.map((task) => task.id === id ? { ...task, ...updatedTask } : task)
+            }
+        })
+
+    }, [column, setTasks])
+
+    // for delete task
+    const deleteTask = useCallback((id: TaskModel['id']) => {
+        console.log(`Removing task with ${id}...`)
+
+        setTasks((allTasks) => {
+            const columnTasks = allTasks[column];
+            return {
+                ...allTasks,
+                [column]: columnTasks.filter((task) => task.id !== id)
+            }
+        })
+    }, [column, setTasks])
+
     return {
         tasks: tasks[column],
-        addEmptyTask
+        addEmptyTask,
+        updateTask,
+        deleteTask
+
     }
 }
 
 export default useColumnTask;
+

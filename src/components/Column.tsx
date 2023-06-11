@@ -12,9 +12,17 @@ const ColumnColorScheme: Record<columnType, string> = {
 };
 
 function Column({ column }: { column: columnType }) {
-    const { tasks, addEmptyTask } = useColumnTask(column);
+    const { tasks, addEmptyTask, updateTask, deleteTask } = useColumnTask(column);
     const columnTasks = tasks.map((task, index) => {
-        return <Task key={task.id} task={task} index={index} />;
+        return (
+            <Task
+                key={task.id}
+                task={task}
+                index={index}
+                onUpdate={updateTask}
+                onDelete={deleteTask}
+            />
+        );
     });
     return (
         <Box>
