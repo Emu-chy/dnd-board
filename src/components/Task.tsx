@@ -1,6 +1,8 @@
 import { Box, IconButton, Textarea } from "@chakra-ui/react";
 import { TaskModel } from "../utils/interfaces";
 import { DeleteIcon } from "@chakra-ui/icons";
+import { AutoCustomTextarea } from "./AutoCustomTextarea";
+import { useTaskDragAndDrop } from "../hooks/useTaskDragAndDrop";
 
 type TaskProps = {
     index: number;
@@ -10,6 +12,10 @@ type TaskProps = {
 };
 
 function Task({ index, task, onUpdate: handleUpdate, onDelete: handleDelete }: TaskProps) {
+    const { ref, isDragging } = useTaskDragAndDrop<HTMLDivElement>({
+        task,
+        index,
+    });
     const handleTitleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const newTitle = e.target.value;
         handleUpdate(task.id, { ...task, title: newTitle });
@@ -21,6 +27,7 @@ function Task({ index, task, onUpdate: handleUpdate, onDelete: handleDelete }: T
     return (
         <>
             <Box
+                ref={ref}
                 as="div"
                 role="group"
                 position="relative"
@@ -34,6 +41,7 @@ function Task({ index, task, onUpdate: handleUpdate, onDelete: handleDelete }: T
                 cursor="grab"
                 bgColor={task.color}
                 fontWeight="bold"
+                opacity={isDragging ? 0.5 : 1}
             >
                 <IconButton
                     position="absolute"
@@ -51,7 +59,7 @@ function Task({ index, task, onUpdate: handleUpdate, onDelete: handleDelete }: T
                     }}
                     onClick={handleDeleteClick}
                 />
-                <Textarea
+                <AutoCustomTextarea
                     value={task.title}
                     fontWeight="semibold"
                     cursor="inherit"

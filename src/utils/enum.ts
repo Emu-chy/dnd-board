@@ -5,3 +5,7 @@ export enum columnType {
     COMPLETED = 'completed'
 
 }
+
+export enum ItemType {
+    TASK = "task"
+}

@@ -6,3 +6,9 @@ export interface TaskModel {
     column: columnType;
     color: string
 }
+
+export interface DragItem {
+    index: number;
+    id: TaskModel['id'];
+    from: columnType;
+}

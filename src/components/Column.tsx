@@ -3,6 +3,7 @@ import { Badge, Box, Heading, IconButton, Stack, useColorModeValue } from "@chak
 import { columnType } from "../utils/enum";
 import Task from "./Task";
 import useColumnTask from "../hooks/useColumnTask";
+import useColumnDrop from "../hooks/useColumnDrop";
 
 const ColumnColorScheme: Record<columnType, string> = {
     Todo: "gray",
@@ -12,7 +13,8 @@ const ColumnColorScheme: Record<columnType, string> = {
 };
 
 function Column({ column }: { column: columnType }) {
-    const { tasks, addEmptyTask, updateTask, deleteTask } = useColumnTask(column);
+    const { tasks, addEmptyTask, updateTask, deleteTask, dropTaskFrom } = useColumnTask(column);
+    const { dropRef, isOver } = useColumnDrop(column, dropTaskFrom);
     const columnTasks = tasks.map((task, index) => {
         return (
             <Task
@@ -45,6 +47,7 @@ function Column({ column }: { column: columnType }) {
                 onClick={addEmptyTask}
             />
             <Stack
+                ref={dropRef}
                 direction={{ base: "row", md: "column" }}
                 h={{ base: 300, md: 600 }}
                 p={4}
@@ -54,6 +57,7 @@ function Column({ column }: { column: columnType }) {
                 rounded="lg"
                 boxShadow="md"
                 overflow="auto"
+                opacity={isOver ? 0.85 : 1}
             >
                 {columnTasks}
             </Stack>
